@@ -136,21 +136,27 @@ ln -sf "${OPT_DIR}/bhttp_runner.sh" /bin/BHTTP
 
 # 8. Selección inteligente de puerto por defecto
 DEFAULT_PORT="2082"
-if ss -tulpn 2>/dev/null | grep -qw ":2082"; then
-    if ! ss -tulpn 2>/dev/null | grep -qw ":2052"; then
-        DEFAULT_PORT="2052"
-    elif ! ss -tulpn 2>/dev/null | grep -qw ":2086"; then
-        DEFAULT_PORT="2086"
-    fi
-fi
 
-# Preservar puerto previo si ya existía configuración
+# Preservar puerto previo si ya existía configuración o servicio activo
 if [ -f "${CONF_DIR}/bhttp.conf" ]; then
     # shellcheck source=/dev/null
     source "${CONF_DIR}/bhttp.conf"
     PORT="${BHTTP_PORT:-$DEFAULT_PORT}"
     TARGET="${BHTTP_SSH:-127.0.0.1:22}"
+elif [ -f "/etc/ADMcgh/conf/bhttp.conf" ]; then
+    # shellcheck source=/dev/null
+    source "/etc/ADMcgh/conf/bhttp.conf"
+    PORT="${BHTTP_PORT:-$DEFAULT_PORT}"
+    TARGET="127.0.0.1:${BHTTP_SSH:-22}"
 else
+    # Instalación completamente limpia: si 2082 está ocupado por otro proceso distinto a BHTTP
+    if ss -tulpn 2>/dev/null | grep -qw ":2082"; then
+        if ! ss -tulpn 2>/dev/null | grep -qw ":2052"; then
+            DEFAULT_PORT="2052"
+        elif ! ss -tulpn 2>/dev/null | grep -qw ":2086"; then
+            DEFAULT_PORT="2086"
+        fi
+    fi
     PORT="$DEFAULT_PORT"
     TARGET="127.0.0.1:22"
 fi
