@@ -18,14 +18,13 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 # Configuración por defecto
-DEFAULT_TOKEN="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"
 GITHUB_REPO="wilderusuga514-alt/protocolos"
 OPT_DIR="/opt/bhttp"
 CONF_DIR="/etc/bhttp"
 SERVICE_NAME="bhttp.service"
 
-# Parsear argumentos si se pasan por CLI
-TOKEN="${GITHUB_TOKEN:-$DEFAULT_TOKEN}"
+# Parsear token opcional si se pasa por CLI o variable de entorno
+TOKEN="${GITHUB_TOKEN:-}"
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --token|-t)
@@ -37,6 +36,12 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Configurar headers de autenticación solo si se proporcionó un token
+CURL_AUTH=()
+if [ -n "$TOKEN" ]; then
+    CURL_AUTH=(-H "Authorization: token ${TOKEN}")
+fi
 
 clear 2>/dev/null || true
 echo -e "${CYAN}${BOLD}==================================================================${NC}"
@@ -88,7 +93,7 @@ if [ "$IS_LOCAL" = true ]; then
     cp "${SCRIPT_DIR}/bhttp/bin/${TARGET_ARCH}/BHTTP" "${OPT_DIR}/bin/BHTTP"
 else
     DOWNLOAD_URL="https://raw.githubusercontent.com/${GITHUB_REPO}/main/bhttp/bin/${TARGET_ARCH}/BHTTP"
-    curl -H "Authorization: token ${TOKEN}" -fsSL "$DOWNLOAD_URL" -o "${OPT_DIR}/bin/BHTTP"
+    curl "${CURL_AUTH[@]}" -fsSL "$DOWNLOAD_URL" -o "${OPT_DIR}/bin/BHTTP"
 fi
 chmod 755 "${OPT_DIR}/bin/BHTTP"
 
@@ -103,7 +108,7 @@ if [ "$TARGET_ARCH" = "aarch64" ]; then
             tar -xzf "${SCRIPT_DIR}/bhttp/runtime/aarch64/glibc235.tar.gz" -C "${OPT_DIR}/runtime"
         else
             RUNTIME_URL="https://raw.githubusercontent.com/${GITHUB_REPO}/main/bhttp/runtime/aarch64/glibc235.tar.gz"
-            curl -H "Authorization: token ${TOKEN}" -fsSL "$RUNTIME_URL" -o /tmp/glibc235.tar.gz
+            curl "${CURL_AUTH[@]}" -fsSL "$RUNTIME_URL" -o /tmp/glibc235.tar.gz
             tar -xzf /tmp/glibc235.tar.gz -C "${OPT_DIR}/runtime"
             rm -f /tmp/glibc235.tar.gz
         fi
@@ -126,8 +131,8 @@ if [ "$IS_LOCAL" = true ]; then
     cp "${SCRIPT_DIR}/bhttp/scripts/bhttp_runner.sh" "${OPT_DIR}/bhttp_runner.sh"
     cp "${SCRIPT_DIR}/bhttp/scripts/bhttp_menu.sh" /usr/local/bin/bhttp
 else
-    curl -H "Authorization: token ${TOKEN}" -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/main/bhttp/scripts/bhttp_runner.sh" -o "${OPT_DIR}/bhttp_runner.sh"
-    curl -H "Authorization: token ${TOKEN}" -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/main/bhttp/scripts/bhttp_menu.sh" -o /usr/local/bin/bhttp
+    curl "${CURL_AUTH[@]}" -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/main/bhttp/scripts/bhttp_runner.sh" -o "${OPT_DIR}/bhttp_runner.sh"
+    curl "${CURL_AUTH[@]}" -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/main/bhttp/scripts/bhttp_menu.sh" -o /usr/local/bin/bhttp
 fi
 chmod 755 "${OPT_DIR}/bhttp_runner.sh"
 chmod 755 /usr/local/bin/bhttp
