@@ -1,0 +1,16 @@
+[Unit]
+Description=BHTTP Bilola Service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/bhttp
+ExecStart=/opt/bhttp/bhttp_runner.sh
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target
