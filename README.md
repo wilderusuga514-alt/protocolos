@@ -14,32 +14,21 @@ Repositorio oficial y modular de protocolos para servidores VPS Linux. Diseñado
 
 ---
 
-## 📥 Instalación Rápida
+## 📥 Instalación Rápida (1 Solo Comando)
 
-### Opción 1: Vía Git Clone (Recomendada para repositorio privado)
-
-Ejecuta en la terminal de tu VPS:
+Copia y pega este comando en la terminal de tu VPS (como `root` o con `sudo`):
 
 ```bash
-git clone https://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@github.com/wilderusuga514-alt/protocolos.git
+bash <(curl -fsSL https://raw.githubusercontent.com/wilderusuga514-alt/protocolos/main/install.sh)
+```
+
+O si prefieres clonar el repositorio:
+
+```bash
+git clone https://github.com/wilderusuga514-alt/protocolos.git
 cd protocolos
 sudo bash install.sh
 ```
-
----
-
-### Opción 2: Un solo comando directo (One-Liner con Token)
-
-```bash
-curl -H "Authorization: token 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" -fsSL https://raw.githubusercontent.com/wilderusuga514-alt/protocolos/main/install.sh | sudo bash -s -- --token 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
-```
-
-> [!NOTE]
-> **Si en el futuro cambias el repositorio a Público:**
-> Podrás instalarlo simplemente ejecutando:
-> ```bash
-> bash <(curl -fsSL https://raw.githubusercontent.com/wilderusuga514-alt/protocolos/main/install.sh)
-> ```
 
 ---
 
