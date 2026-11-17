@@ -103,7 +103,7 @@ check_port_collision() {
 }
 
 header() {
-    clear
+    clear 2>/dev/null || true
     load_config
     get_status
     echo -e "${CYAN}${BOLD}==================================================================${NC}"
@@ -252,7 +252,7 @@ finally:
                 fi
                 ;;
             0)
-                clear
+                clear 2>/dev/null || true
                 echo -e "${GREEN}¡Hasta pronto! Puedes volver a abrir este panel escribiendo 'bhttp'.${NC}\n"
                 exit 0
                 ;;

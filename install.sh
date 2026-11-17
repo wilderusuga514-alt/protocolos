@@ -38,7 +38,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-clear
+clear 2>/dev/null || true
 echo -e "${CYAN}${BOLD}==================================================================${NC}"
 echo -e "          ${BOLD}INSTALADOR UNIVERSAL BHTTP (DTUNNEL / BILOLA)${NC}"
 echo -e "                   ${GREEN}WINZAP VPN PROTOCOLOS${NC}"
